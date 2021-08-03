@@ -1,41 +1,60 @@
 package com.example.lazycolumnsync
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.launch
 
 
 // Exercise project to sync list on a LazyColumn after adding and deleting items
 
 class MainActivity : ComponentActivity() {
+
+    private val wordViewModel by viewModels<WordViewModel>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
-            LazyColumnSyncApp()
+            LazyColumnSyncApp(wordViewModel)
         }
     }
 }
 
 @Composable
-fun LazyColumnSyncApp() {
+fun LazyColumnSyncApp(wordViewModel: WordViewModel) {
+    val words: List<String> by wordViewModel.words.observeAsState(listOf())
+    val wordItemCount = words.size
+
     var newWord by remember { mutableStateOf("") }
+
+    var scrollState = rememberLazyListState()
+    var coroutineScope = rememberCoroutineScope()
+
+    val context = LocalContext.current
+
     Column {
         TopAppBar(title = { Text(stringResource(id = R.string.app_name)) })
 
@@ -56,7 +75,12 @@ fun LazyColumnSyncApp() {
                         .height(56.dp)
                         .padding(start = 8.dp)
                         .fillMaxWidth(),
-                    onClick = { /*TODO*/ }) {
+                    onClick = {
+                        if (!newWord.trim().isNullOrEmpty()) {
+                            Toast.makeText(context, newWord, Toast.LENGTH_SHORT).show()
+                            wordViewModel.addWord(newWord.trim())
+                        }
+                    }) {
                     Icon(
                         Icons.Filled.AddCircle,
                         contentDescription = null,
@@ -70,11 +94,12 @@ fun LazyColumnSyncApp() {
             Spacer(modifier = Modifier.padding(top = 16.dp))
 
             LazyColumn(
+                state = scrollState,
                 modifier = Modifier.weight(1f), // fill up the remaining space
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                items(50) {
-                    WordItemLayout(it)
+                items(words.size) {
+                    WordItemLayout(it, words)
                 }
             }
 
@@ -85,11 +110,18 @@ fun LazyColumnSyncApp() {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
             ) {
-                Button(onClick = { /*TODO*/ }) {
+                Button(onClick = {
+                    coroutineScope.launch { scrollState.animateScrollToItem(0) }
+                }) {
                     Text("Scroll to Top")
                 }
 
-                Button(onClick = { /*TODO*/ }, Modifier.padding(start = 8.dp)) {
+                Button(
+                    onClick = {
+                        coroutineScope.launch { scrollState.animateScrollToItem(wordItemCount - 1) }
+                    },
+                    Modifier.padding(start = 8.dp)
+                ) {
                     Text("Scroll to Bottom")
                 }
             }
@@ -98,7 +130,7 @@ fun LazyColumnSyncApp() {
 }
 
 @Composable
-fun WordItemLayout(index: Int) {
+fun WordItemLayout(index: Int, words: List<String>) {
     Row(
         modifier = Modifier
             .background(MaterialTheme.colors.primaryVariant)
@@ -108,7 +140,7 @@ fun WordItemLayout(index: Int) {
     ) {
         Image(painter = painterResource(R.drawable.ic_star), contentDescription = null)
         Text(
-            text = "Word # $index",
+            text = "${words[index]}",
             modifier = Modifier
                 .padding(start = 16.dp)
                 .weight(1f),
@@ -129,5 +161,5 @@ fun WordItemLayout(index: Int) {
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
-    LazyColumnSyncApp()
+    // LazyColumnSyncApp()
 }

@@ -5,6 +5,7 @@
 - Hiding keyboard on enter press and on button click.
 - Case insensitive check for a word on a list.
 - Make a word sentence case.
+- Allow entering only letters on the TextEdit.
 
 ## Dependencies
 ```

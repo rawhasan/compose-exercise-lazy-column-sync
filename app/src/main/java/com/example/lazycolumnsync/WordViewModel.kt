@@ -19,7 +19,7 @@ class WordViewModel : ViewModel() {
         return WordDataSource().loadWords()
     }
 
-    fun addWord(word: String) {
+    fun onAddWord(word: String) {
         _words.value = _words.value?.plus(word)
         Log.d("WordViewModel", "${_words.value}" )
     }

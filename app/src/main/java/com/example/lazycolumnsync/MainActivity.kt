@@ -1,15 +1,15 @@
 package com.example.lazycolumnsync
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
@@ -17,14 +17,17 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
 
 
@@ -32,28 +35,33 @@ import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
 
-    private val wordViewModel by viewModels<WordViewModel>()
+    // private val wordViewModel by viewModels<WordViewModel>()
 
+    @ExperimentalComposeUiApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
-            LazyColumnSyncApp(wordViewModel)
+            //LazyColumnSyncApp(wordViewModel)
+            LazyColumnSyncApp()
         }
     }
 }
 
+@ExperimentalComposeUiApi
 @Composable
-fun LazyColumnSyncApp(wordViewModel: WordViewModel) {
+//fun LazyColumnSyncApp(wordViewModel: WordViewModel) {
+fun LazyColumnSyncApp(wordViewModel: WordViewModel = viewModel()) {
     val words: List<String> by wordViewModel.words.observeAsState(listOf())
     val wordItemCount = words.size
 
     var newWord by remember { mutableStateOf("") }
 
+    // experimental compose feature
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     var scrollState = rememberLazyListState()
     var coroutineScope = rememberCoroutineScope()
-
-    val context = LocalContext.current
 
     Column {
         TopAppBar(title = { Text(stringResource(id = R.string.app_name)) })
@@ -68,8 +76,13 @@ fun LazyColumnSyncApp(wordViewModel: WordViewModel) {
                     value = newWord,
                     onValueChange = { newWord = it },
                     label = { Text("New Word") },
-                    modifier = Modifier.fillMaxWidth(0.7f)
+                    modifier = Modifier.fillMaxWidth(0.7f),
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(
+                        onDone = { keyboardController?.hide() })
                 )
+
+                // The Add Button
                 Button(
                     modifier = Modifier
                         .height(56.dp)
@@ -77,8 +90,9 @@ fun LazyColumnSyncApp(wordViewModel: WordViewModel) {
                         .fillMaxWidth(),
                     onClick = {
                         if (!newWord.trim().isNullOrEmpty()) {
-                            Toast.makeText(context, newWord, Toast.LENGTH_SHORT).show()
-                            wordViewModel.addWord(newWord.trim())
+                            wordViewModel.onAddWord(newWord.trim())
+                            newWord = ""
+                            keyboardController?.hide()
                         }
                     }) {
                     Icon(

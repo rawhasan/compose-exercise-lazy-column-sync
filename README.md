@@ -6,6 +6,7 @@
 - Case insensitive check for a word on a list.
 - Make a word sentence case.
 - Allow entering only letters on the TextEdit.
+- TopAppBar icon change on click (ascending/descending order).
 
 ## Dependencies
 ```

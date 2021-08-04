@@ -89,9 +89,9 @@ fun LazyColumnSyncApp(wordViewModel: WordViewModel = viewModel()) {
                         .padding(start = 8.dp)
                         .fillMaxWidth(),
                     onClick = {
-                        // add the word if valid and does not already in the list
+                        // add the word if valid and is not already in the list
                         val trimmedWord = newWord.trim()
-                        if (!trimmedWord.isNullOrEmpty()) {
+                        if (trimmedWord.isNotEmpty()) {
                             if (!wordViewModel.isWordExists(trimmedWord)) {
                                 wordViewModel.onAddWord(newWord.trim())
                                 newWord = ""
@@ -158,7 +158,8 @@ fun WordItemLayout(index: Int, words: List<String>) {
     ) {
         Image(painter = painterResource(R.drawable.ic_star), contentDescription = null)
         Text(
-            text = "${words[index]}",
+            text = words[index].lowercase()
+                .replaceFirstChar { it.uppercase() }, // capitalize first letter
             modifier = Modifier
                 .padding(start = 16.dp)
                 .weight(1f),
@@ -176,8 +177,9 @@ fun WordItemLayout(index: Int, words: List<String>) {
     }
 }
 
+@ExperimentalComposeUiApi
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
-    // LazyColumnSyncApp()
+    LazyColumnSyncApp()
 }

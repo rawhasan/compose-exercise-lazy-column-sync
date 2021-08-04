@@ -21,6 +21,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -49,7 +50,6 @@ class MainActivity : ComponentActivity() {
 
 @ExperimentalComposeUiApi
 @Composable
-//fun LazyColumnSyncApp(wordViewModel: WordViewModel) {
 fun LazyColumnSyncApp(wordViewModel: WordViewModel = viewModel()) {
     val words: List<String> by wordViewModel.words.observeAsState(listOf())
     val wordItemCount = words.size
@@ -74,7 +74,6 @@ fun LazyColumnSyncApp(wordViewModel: WordViewModel = viewModel()) {
                 // Enter new word TextField
                 TextField(
                     value = newWord,
-                    //onValueChange = { newWord = it },
                     onValueChange = {
                         // allow only letters as input
                         if (it.all { enteredChar -> enteredChar.isLetter() }) {
@@ -96,14 +95,8 @@ fun LazyColumnSyncApp(wordViewModel: WordViewModel = viewModel()) {
                         .fillMaxWidth(),
                     onClick = {
                         // add the word if valid and is not already in the list
-                        val trimmedWord = newWord.trim()
-                        if (trimmedWord.isNotEmpty()) {
-                            if (!wordViewModel.isWordExists(trimmedWord)) {
-                                wordViewModel.onAddWord(newWord.trim())
-                                newWord = ""
-                                keyboardController?.hide()
-                            }
-                        }
+                        onAddWord(newWord, wordViewModel, keyboardController)
+                        newWord = ""
                     }) {
                     Icon(
                         Icons.Filled.AddCircle,
@@ -149,6 +142,22 @@ fun LazyColumnSyncApp(wordViewModel: WordViewModel = viewModel()) {
                     Text("Scroll to Bottom")
                 }
             }
+        }
+    }
+}
+
+@ExperimentalComposeUiApi
+private fun onAddWord(
+    newWord: String,
+    wordViewModel: WordViewModel,
+    keyboardController: SoftwareKeyboardController?
+) {
+    val trimmedWord = newWord.trim()
+
+    if (trimmedWord.isNotEmpty()) {
+        if (!wordViewModel.isWordExists(trimmedWord)) {
+            wordViewModel.onAddWord(trimmedWord)
+            keyboardController?.hide()
         }
     }
 }

@@ -11,24 +11,45 @@ class WordViewModel : ViewModel() {
     val words: LiveData<List<String>>
         get() = _words
 
+    private var _sortedAscendingOrder = true
+
     init {
-        _words.value = loadWords()
+        _words.value = loadWords().sorted()
     }
 
+    // load the words on the list from datasource
     private fun loadWords(): List<String> {
         return WordDataSource().loadWords()
     }
 
+    // add a new word to the list, passed from the UI
     fun onAddWord(word: String) {
         _words.value = _words.value?.plus(word)
-        Log.d("WordViewModel", "${_words.value}" )
 
-        val myWords = _words.value
-        myWords?.sorted()
+        if (_sortedAscendingOrder) {
+            _words.value = _words.value?.sorted()
+            Log.d("WordViewModel", "Sorting in ascending order")
+        } else {
+            _words.value = _words.value?.sortedDescending()
+            Log.d("WordViewModel", "Sorting in descending order")
+        }
     }
 
+    // check if the word passed from the UI is already on the list
     fun isWordExists(searchWord: String): Boolean {
         val searchResult = _words.value?.filter { it.lowercase() == searchWord.lowercase() }
         return !searchResult.isNullOrEmpty()
+    }
+
+    // sort the list in ascending or descending order
+    // based on the arrow status passing from the UI
+    fun onSortWord(ascendingOrder: Boolean) {
+        if (ascendingOrder) {
+            _words.value = _words.value?.sorted()
+            _sortedAscendingOrder = true
+        } else {
+            _words.value = _words.value?.sortedDescending()
+            _sortedAscendingOrder = false
+        }
     }
 }

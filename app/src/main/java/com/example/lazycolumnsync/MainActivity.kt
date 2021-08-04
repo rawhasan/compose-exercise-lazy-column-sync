@@ -14,6 +14,8 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -54,6 +56,7 @@ fun LazyColumnSyncApp(wordViewModel: WordViewModel = viewModel()) {
     val words: List<String> by wordViewModel.words.observeAsState(listOf())
     val wordItemCount = words.size
 
+    var sortAscending by remember { mutableStateOf(true) }
     var newWord by remember { mutableStateOf("") }
 
     // experimental compose feature
@@ -63,7 +66,21 @@ fun LazyColumnSyncApp(wordViewModel: WordViewModel = viewModel()) {
     val coroutineScope = rememberCoroutineScope()
 
     Column {
-        TopAppBar(title = { Text(stringResource(id = R.string.app_name)) })
+        TopAppBar(
+            title = { Text(stringResource(id = R.string.app_name)) },
+            actions = {
+                IconButton(onClick = {
+                    sortAscending = !sortAscending
+                    wordViewModel.onSortWord(sortAscending)
+                }) {
+                    Icon(
+                        imageVector = if (sortAscending) Icons.Filled.KeyboardArrowDown else Icons.Filled.KeyboardArrowUp,
+                        contentDescription = null,
+                        modifier = Modifier.size(40.dp),
+                        tint = Color.White
+                    )
+                }
+            })
 
         Column(Modifier.padding(16.dp)) {
 

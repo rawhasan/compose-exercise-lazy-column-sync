@@ -60,8 +60,8 @@ fun LazyColumnSyncApp(wordViewModel: WordViewModel = viewModel()) {
     // experimental compose feature
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    var scrollState = rememberLazyListState()
-    var coroutineScope = rememberCoroutineScope()
+    val scrollState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
 
     Column {
         TopAppBar(title = { Text(stringResource(id = R.string.app_name)) })
@@ -89,10 +89,14 @@ fun LazyColumnSyncApp(wordViewModel: WordViewModel = viewModel()) {
                         .padding(start = 8.dp)
                         .fillMaxWidth(),
                     onClick = {
-                        if (!newWord.trim().isNullOrEmpty()) {
-                            wordViewModel.onAddWord(newWord.trim())
-                            newWord = ""
-                            keyboardController?.hide()
+                        // add the word if valid and does not already in the list
+                        val trimmedWord = newWord.trim()
+                        if (!trimmedWord.isNullOrEmpty()) {
+                            if (!wordViewModel.isWordExists(trimmedWord)) {
+                                wordViewModel.onAddWord(newWord.trim())
+                                newWord = ""
+                                keyboardController?.hide()
+                            }
                         }
                     }) {
                     Icon(

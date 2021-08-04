@@ -22,5 +22,13 @@ class WordViewModel : ViewModel() {
     fun onAddWord(word: String) {
         _words.value = _words.value?.plus(word)
         Log.d("WordViewModel", "${_words.value}" )
+
+        val myWords = _words.value
+        myWords?.sorted()
+    }
+
+    fun isWordExists(searchWord: String): Boolean {
+        val searchResult = _words.value?.filter { it.lowercase() == searchWord.lowercase() }
+        return !searchResult.isNullOrEmpty()
     }
 }

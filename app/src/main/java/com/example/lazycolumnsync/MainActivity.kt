@@ -30,7 +30,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
 
-
 // Exercise project to sync list on a LazyColumn after adding and deleting items
 
 class MainActivity : ComponentActivity() {
@@ -72,9 +71,16 @@ fun LazyColumnSyncApp(wordViewModel: WordViewModel = viewModel()) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
             ) {
+                // Enter new word TextField
                 TextField(
                     value = newWord,
-                    onValueChange = { newWord = it },
+                    //onValueChange = { newWord = it },
+                    onValueChange = {
+                        // allow only letters as input
+                        if (it.all { enteredChar -> enteredChar.isLetter() }) {
+                            newWord = it
+                        }
+                    },
                     label = { Text("New Word") },
                     modifier = Modifier.fillMaxWidth(0.7f),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),

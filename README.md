@@ -4,6 +4,7 @@
 - Filling up the whole remaining space by an UI element.
 - Hiding keyboard on enter press and on button click.
 - Case insensitive check for a word on a list.
+- Make a word sentence case.
 
 ## Dependencies
 ```

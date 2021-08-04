@@ -2,6 +2,7 @@
 - Sync list on a LazyColumn after adding and deleting items.
 - Using TopAppBar, Button with an icon, built-in icons.
 - Filling up the whole remaining space by an UI element.
+- Hiding keyboard on enter press and on button click.
 
 ## Dependencies
 ```

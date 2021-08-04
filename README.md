@@ -3,6 +3,7 @@
 - Using TopAppBar, Button with an icon, built-in icons.
 - Filling up the whole remaining space by an UI element.
 - Hiding keyboard on enter press and on button click.
+- Case insensitive check for a word on a list.
 
 ## Dependencies
 ```

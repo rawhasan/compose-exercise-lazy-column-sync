@@ -10,7 +10,7 @@
 - Delete items from LazyColumn on click.
 - Leading icon and error message on TextField
 
-[] TODO: Add trailing icon based on error
+- [ ] TODO: Add trailing icon based on error
 
 ## Dependencies
 ```

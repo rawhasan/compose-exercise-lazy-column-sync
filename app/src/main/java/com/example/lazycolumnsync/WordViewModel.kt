@@ -52,4 +52,13 @@ class WordViewModel : ViewModel() {
             _sortedAscendingOrder = false
         }
     }
+
+    // delete a word from the list if exists
+    fun onDeleteWord(word: String) {
+        val index = _words.value?.indexOf(word)
+
+        if (index != null && index >= 0) {
+            _words.value = _words.value?.minus(word)
+        }
+    }
 }

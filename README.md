@@ -7,6 +7,7 @@
 - Make a word sentence case.
 - Allow entering only letters on the TextEdit.
 - TopAppBar icon change on click (ascending/descending order).
+- Delete items from LazyColumn on click.
 
 ## Dependencies
 ```

@@ -1,6 +1,7 @@
 package com.example.lazycolumnsync
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -133,7 +134,7 @@ fun LazyColumnSyncApp(wordViewModel: WordViewModel = viewModel()) {
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 items(words.size) {
-                    WordItemLayout(it, words)
+                    WordItemLayout(it, words, wordViewModel)
                 }
             }
 
@@ -180,7 +181,7 @@ private fun onAddWord(
 }
 
 @Composable
-fun WordItemLayout(index: Int, words: List<String>) {
+fun WordItemLayout(index: Int, words: List<String>, wordViewModel: WordViewModel) {
     Row(
         modifier = Modifier
             .background(MaterialTheme.colors.primaryVariant)
@@ -198,14 +199,20 @@ fun WordItemLayout(index: Int, words: List<String>) {
             color = Color.White,
             fontSize = 20.sp
         )
-        Icon(
-            imageVector = Icons.Filled.Delete,
-            contentDescription = null,
-            modifier = Modifier
-                .padding(start = 8.dp, bottom = 12.dp)
-                .size(16.dp),
-            tint = Color.White
-        )
+        IconButton(onClick = {
+            Log.d("WordItemLayout", words[index])
+            wordViewModel.onDeleteWord(words[index])
+        }) {
+            Icon(
+                imageVector = Icons.Filled.Delete,
+                contentDescription = null,
+                modifier = Modifier
+                    .padding(start = 8.dp, bottom = 12.dp)
+                    .size(16.dp),
+                tint = Color.White,
+            )
+        }
+
     }
 }
 

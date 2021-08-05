@@ -26,5 +26,5 @@ implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
 
 <p>
   <img src="https://user-images.githubusercontent.com/67064997/128343506-6b5ae70e-f3f4-4d3c-917f-cc6342a07f1f.png" width="30%" />
-  <img src="https://user-images.githubusercontent.com/67064997/128343514-fba0d76b-1c44-4655-885b-57425aa11b87.png" width="30%" />  
+  <img src="https://user-images.githubusercontent.com/67064997/128351895-ab210e56-ae71-44d8-ad76-44740ef43c4a.png" width="30%" />  
 </p>

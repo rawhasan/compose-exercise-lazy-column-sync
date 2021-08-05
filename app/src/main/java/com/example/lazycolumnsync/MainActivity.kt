@@ -1,7 +1,6 @@
 package com.example.lazycolumnsync
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -26,6 +25,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -100,7 +100,7 @@ fun LazyColumnSyncApp(wordViewModel: WordViewModel = viewModel()) {
                             newWord = it
                         }
                     },
-                    label = { Text(if (isError) errorMessage else "New Word") },
+                    label = { Text("New Word") },
                     modifier = Modifier.fillMaxWidth(0.7f),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(
@@ -113,6 +113,13 @@ fun LazyColumnSyncApp(wordViewModel: WordViewModel = viewModel()) {
                             tint = MaterialTheme.colors.primaryVariant,
                             modifier = Modifier.padding(start = 24.dp, end = 12.dp)
                         )
+                    },
+                    trailingIcon = {
+                        if (isError)
+                            Icon(
+                                imageVector = Icons.Filled.Info, contentDescription = "Error",
+                                tint = MaterialTheme.colors.error
+                            )
                     }
                 )
 
@@ -123,12 +130,10 @@ fun LazyColumnSyncApp(wordViewModel: WordViewModel = viewModel()) {
                         .padding(start = 8.dp)
                         .fillMaxWidth(),
                     onClick = {
-                        // TODO: Show trailing icon if error
-
                         // add the word if valid and is not already in the list
                         // show error message if otherwise, and return
                         if (newWord.trim().isEmpty()) {
-                            errorMessage = "Enter a word to add"
+                            errorMessage = "Enter a word"
                             isError = true
                             return@Button
                         }
@@ -140,7 +145,6 @@ fun LazyColumnSyncApp(wordViewModel: WordViewModel = viewModel()) {
 
                             Toast.makeText(context, "Word added!", Toast.LENGTH_SHORT).show()
                         } else {
-                            Log.d("MainUI", "Word exists. Showing error message.")
                             isError = true
                             errorMessage = "Word already exists!"
                             return@Button
@@ -154,6 +158,15 @@ fun LazyColumnSyncApp(wordViewModel: WordViewModel = viewModel()) {
                     Spacer(modifier = Modifier.padding(start = 8.dp))
                     Text("Add", fontSize = 16.sp)
                 }
+            }
+
+            // display the error message if any error
+            if (isError) {
+                Text(
+                    text = errorMessage,
+                    modifier = Modifier.padding(top = 8.dp),
+                    style = TextStyle(color = MaterialTheme.colors.error)
+                )
             }
 
             Spacer(modifier = Modifier.padding(top = 16.dp))
@@ -236,7 +249,6 @@ fun WordItemLayout(index: Int, words: List<String>, wordViewModel: WordViewModel
             fontSize = 20.sp
         )
         IconButton(onClick = {
-            Log.d("WordItemLayout", words[index])
             wordViewModel.onDeleteWord(words[index])
         }) {
             Icon(

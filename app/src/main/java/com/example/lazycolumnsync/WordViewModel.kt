@@ -1,6 +1,5 @@
 package com.example.lazycolumnsync
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -28,10 +27,8 @@ class WordViewModel : ViewModel() {
 
         if (_sortedAscendingOrder) {
             _words.value = _words.value?.sorted()
-            Log.d("WordViewModel", "Sorting in ascending order")
         } else {
             _words.value = _words.value?.sortedDescending()
-            Log.d("WordViewModel", "Sorting in descending order")
         }
     }
 

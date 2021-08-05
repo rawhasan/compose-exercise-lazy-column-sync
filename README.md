@@ -8,9 +8,9 @@
 - Allow entering only letters on the TextEdit.
 - TopAppBar icon change on click (ascending/descending order).
 - Delete items from LazyColumn on click.
-- Leading icon and error message on TextField
-
-- [ ] TODO: Add trailing icon based on error
+- Show leading icon on TextField.
+- Show trailing icon on TextField based on error.
+- Show separate error message with TextField based on error.
 
 ## Dependencies
 ```

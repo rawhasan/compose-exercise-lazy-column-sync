@@ -2,6 +2,7 @@ package com.example.lazycolumnsync
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -20,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -64,6 +66,7 @@ fun LazyColumnSyncApp(wordViewModel: WordViewModel = viewModel()) {
 
     val scrollState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     Column {
         TopAppBar(
@@ -134,6 +137,8 @@ fun LazyColumnSyncApp(wordViewModel: WordViewModel = viewModel()) {
                             newWord = ""
                             errorMessage = ""
                             isError = false
+
+                            Toast.makeText(context, "Word added!", Toast.LENGTH_SHORT).show()
                         } else {
                             Log.d("MainUI", "Word exists. Showing error message.")
                             isError = true

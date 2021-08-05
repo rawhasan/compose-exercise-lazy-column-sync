@@ -13,10 +13,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -59,6 +56,8 @@ fun LazyColumnSyncApp(wordViewModel: WordViewModel = viewModel()) {
 
     var sortAscending by remember { mutableStateOf(true) }
     var newWord by remember { mutableStateOf("") }
+    var isError by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
 
     // experimental compose feature
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -98,11 +97,20 @@ fun LazyColumnSyncApp(wordViewModel: WordViewModel = viewModel()) {
                             newWord = it
                         }
                     },
-                    label = { Text("New Word") },
+                    label = { Text(if (isError) errorMessage else "New Word") },
                     modifier = Modifier.fillMaxWidth(0.7f),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(
-                        onDone = { keyboardController?.hide() })
+                        onDone = { keyboardController?.hide() }),
+                    isError = isError,
+                    leadingIcon = {
+                        Icon(
+                            painterResource(R.drawable.ic_star),
+                            contentDescription = null,
+                            tint = MaterialTheme.colors.primaryVariant,
+                            modifier = Modifier.padding(start = 24.dp, end = 12.dp)
+                        )
+                    }
                 )
 
                 // The Add Button
@@ -112,9 +120,26 @@ fun LazyColumnSyncApp(wordViewModel: WordViewModel = viewModel()) {
                         .padding(start = 8.dp)
                         .fillMaxWidth(),
                     onClick = {
+                        // TODO: Show trailing icon if error
+
                         // add the word if valid and is not already in the list
-                        onAddWord(newWord, wordViewModel, keyboardController)
-                        newWord = ""
+                        // show error message if otherwise, and return
+                        if (newWord.trim().isEmpty()) {
+                            errorMessage = "Enter a word to add"
+                            isError = true
+                            return@Button
+                        }
+
+                        if (onAddWord(newWord, wordViewModel, keyboardController)) {
+                            newWord = ""
+                            errorMessage = ""
+                            isError = false
+                        } else {
+                            Log.d("MainUI", "Word exists. Showing error message.")
+                            isError = true
+                            errorMessage = "Word already exists!"
+                            return@Button
+                        }
                     }) {
                     Icon(
                         Icons.Filled.AddCircle,
@@ -169,15 +194,21 @@ private fun onAddWord(
     newWord: String,
     wordViewModel: WordViewModel,
     keyboardController: SoftwareKeyboardController?
-) {
+): Boolean {
     val trimmedWord = newWord.trim()
+    var success = false
 
     if (trimmedWord.isNotEmpty()) {
-        if (!wordViewModel.isWordExists(trimmedWord)) {
+        success = if (!wordViewModel.isWordExists(trimmedWord)) {
             wordViewModel.onAddWord(trimmedWord)
             keyboardController?.hide()
+            true
+        } else {
+            false
         }
     }
+
+    return success
 }
 
 @Composable

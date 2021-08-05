@@ -5,7 +5,7 @@
 - Hiding keyboard on enter press and on button click.
 - Case insensitive check for a word on a list.
 - Make a word sentence case.
-- Allow entering only letters on the TextEdit.
+- Allow entering only letters on the TextField.
 - TopAppBar icon change on click (ascending/descending order).
 - Delete items from LazyColumn on click.
 - Show leading icon on TextField.

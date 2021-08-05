@@ -22,4 +22,7 @@ implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
 ```
 <br />
 
-<img src="https://user-images.githubusercontent.com/67064997/128050350-f576777a-f35c-4d0f-b2de-ff90faf11b5f.png" width="350" />
+<p>
+  <img src="https://user-images.githubusercontent.com/67064997/128343506-6b5ae70e-f3f4-4d3c-917f-cc6342a07f1f.png" width="30%" />
+  <img src="https://user-images.githubusercontent.com/67064997/128343514-fba0d76b-1c44-4655-885b-57425aa11b87.png" width="30%" />  
+</p>

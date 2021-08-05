@@ -12,6 +12,8 @@
 - Show trailing icon on TextField based on error.
 - Show separate error message with TextField based on error.
 
+- [ ] FIXME: Strange sorting bug. Keeps the new words separate while sorting.
+
 ## Dependencies
 ```
 // Compose ViewModel
